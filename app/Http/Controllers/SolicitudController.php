@@ -7,59 +7,29 @@ use Illuminate\Http\Request;
 
 class SolicitudController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('solicitudes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'nombres' => ['required', 'string', 'max:120'],
+            'apellidos' => ['required', 'string', 'max:120'],
+            'barrio' => ['required', 'string', 'max:120'],
+            'comuna_corregimiento' => ['required', 'string', 'max:120'],
+            'celular' => ['required', 'string', 'max:30'],
+            'direccion' => ['required', 'string', 'max:255'],
+            'punto_atencion' => ['required', 'string', 'max:80'],
+            'latitud' => ['required', 'numeric', 'between:-90,90'],
+            'longitud' => ['required', 'numeric', 'between:-180,180'],
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Solicitud $solicitud)
-    {
-        //
-    }
+        $validated['user_id'] = $request->user()->id;
+        Solicitud::create($validated);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Solicitud $solicitud)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Solicitud $solicitud)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Solicitud $solicitud)
-    {
-        //
+        return redirect()->route('ventanilla.solicitudes.create')
+            ->with('success', 'La solicitud fue registrada correctamente.');
     }
 }
